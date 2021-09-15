@@ -8,8 +8,8 @@ flask_app = Flask(__name__)
 swagger = Swagger(flask_app)
 
 
-@flask_app.route("/test/service/<int:sheet_id>/", methods=["GET"])
-def get_data(sheet_id):
+@flask_app.route("/test/service/<int:sheet_id>/<sheet_type>/", methods=["GET"])
+def get_data(sheet_id, sheet_type):
     """Микросервис "Тестовый сервис"
         ---
         parameters:
@@ -19,7 +19,7 @@ def get_data(sheet_id):
               required: true
         responses:
           200:
-            description: Get data in the excel file
+            description: Get data
         """
     wb = load_workbook('тест.xlsx')
     sheet = wb['Лист1']
@@ -50,12 +50,12 @@ def post_data():
                 required: true
             responses:
               200:
-                description: Update data in the table
+                description: Update data
             """
     content = request.get_json()
     wb = load_workbook('тест.xlsx')
     sheet = wb['Лист1']
-    sheet_id = content['id']+1
+    sheet_id = content['id'] + 1
     if sheet[f'B{sheet_id}'].value is None:
         return '<h2>Object Does Not Exist</h2>', 404
     sheet[f'B{sheet_id}'].value = content['name']
