@@ -31,10 +31,13 @@ def get_data(sheet_id, sheet_type):
             'name': sheet[f'B{sheet_id + 1}'].value,
             'data': sheet[f'C{sheet_id + 1}'].value,
         }
-        sheet_type = json_data[data['id']]
-        data['type'] = sheet_type
+        json_type = json_data[data['id']]
+        if sheet_type != json_type:
+            return '<h2>Incorrect sheet type</h2>'
+        else:
+            data['type'] = json_type
     except KeyError:
-        return '<h2>Object Does Not Exist</h2>', 404
+        return '<h2>Object Does Not Exist</h2>'
     return jsonify(data)
 
 
@@ -57,7 +60,7 @@ def post_data():
     sheet = wb['Лист1']
     sheet_id = content['id'] + 1
     if sheet[f'B{sheet_id}'].value is None:
-        return '<h2>Object Does Not Exist</h2>', 404
+        return '<h2>Object Does Not Exist</h2>'
     sheet[f'B{sheet_id}'].value = content['name']
     wb.save(filename="тест.xlsx")
     return jsonify({"info": "ok"})
